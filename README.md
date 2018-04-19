@@ -1,70 +1,25 @@
-### Modbus Read/Write Plugins for Domoticz
-Author: Sebastiaan Ebeltjes / domoticx.nl
+### Orno WE-504 Reader plugin for Domoticz
+Author: Andrzej Pichlinski
 
 **Support for:**
 
-* RS232/RS485
-* RTU
-* ASCII
-* RTU over TCP
-* TCP/IP
+* Orno WE-504 (via Modbus RTU interface)
 
-**Functions of the READ plugin**
+**Functions of the plugin**
 
-* Read Coil (Function 1)
-* Read Discrete Input (Function 2)
-* Read Holding Registers (Function 3)
-* Read Input Registers (Function 4)
-
-Supported data types:
-
-* No conversion (passtrough)
-* INT 8/16/32/64-Bit
-* UINT 8/16/32/64-Bit
-* FLOAT 32/64-Bit
-* STRING 2/4/6/8 Bytes
-
-**Functions of the WRITE plugin**
-
-* Write Single Coil (Function 5)
-* Write Single Holding Register (Function 6)
-* Write Multiple Coils (Function 15)
-* Write Registers (Function 16)
-
-RTU/ASCII/RTU over TCP: Write HEX Payloads, like: 0x0100
-TCP/IP: Write INT Payloads, like: 53
+* Read voltage
+* Read current power
 
 -----
 ### Installation
 
+Place the folder inside the domoticz plugin folder, for example like this construction:
 
-Place the folders inside the domoticz plugin folder, for example like this construction:
-
-**/home/pi/domoticz/plugins/modbus-write/plugin.py**
-
-**/home/pi/domoticz/plugins/modbus-read/plugin.py**
+**/home/pi/domoticz/plugins/orno-reader-domoticz/plugin.py**
 
 Then restart domoticz with: ```sudo service domoticz.sh restart```
 
 Succesfully Tested on Domoticz version: 3.8153 (Stable)
-
------
-### Using RTU / ASCII (SERIAL HW)
-
-* Hardware: USB RS485-Serial Stick like **[This one](http://domoticx.nl/webwinkel/index.php?route=product/product&product_id=386)**
-* Setup: Select method "RTU" or "ASCII", Serial Port, BaudRate, PortSettings
-* Device adress is most likely: 1 to 247
-* Payload in HEX, like: 0x0100
-
------
-### Using RTU over TCP / TCP/IP
-
-* Hardware: Not required
-* Setup: Select method "RTU over TCP" or "TCP/IP"
-* Device adress is most likely an ip: xxx.xxx.xxx.xxx
-* Port is default 502
-* RTU over TCP: Write HEX Payloads, like: 0x0100
-* TCP/IP: Write INT Payloads, like: 53
 
 -----
 ### Dependancies
@@ -102,8 +57,3 @@ Six is a Python 2 and 3 compatibility library. It provides utility functions for
 or
 
 ```sudo cp six.py /usr/lib/python3.5```
-
------
-### HW Tested:
-* [Relay board](http://domoticx.com/modbus-relaisbord/)
-* [KWh Meter - EASTRON SDM120](http://domoticx.com/modbus-kwh-meter-eastron-sdm120/)
