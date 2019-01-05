@@ -102,17 +102,16 @@ class BasePlugin:
         #Domoticz.Log("onStart called")
         if Parameters["Mode4"] == "debug": Domoticz.Debugging(1)
         if (len(Devices) == 0): 
+            Options = { "Custom" : "1;VA"} 
             Domoticz.Device(Name="Voltage", Unit=1, TypeName="Voltage", Image=0, Options="").Create()
             Domoticz.Device(Name="Amperage", Unit=2, TypeName="Current/Ampere", Image=0, Options = { "Custom" : "1;A"}).Create()
             Domoticz.Device(Name="Frequency", Unit=3, TypeName="Custom", Options = { "Custom" : "1;Hz"}).Create()
             Domoticz.Device(Name="Active power", Unit=4, TypeName="Usage", Image=0, Options = { "Custom" : "1;W"}).Create()            
-            Domoticz.Device(Name="Reactive power", Unit=5, TypeName="Custom", Options = { "Custom" : "1;var"}).Create()
-            Domoticz.Device(Name="Apparent power", Unit=6, TypeName="Custom", Options = { "Custom" : "1;VA"}).Create()
-            Domoticz.Device(Name="Power factor", Unit=7, Type=243, Subtype=29, Switchtype=0, Image=0, Options="").Create()
+            Domoticz.Device(Name="Reactive power", Unit=5, TypeName="Custom", Options = Options).Create()
+            Domoticz.Device(Name="Apparent power", Unit=6, TypeName="Custom", Options = Options).Create()
+            Domoticz.Device(Name="Power factor", Unit=7, Type=243, Subtype=29, Switchtype=0, Image=0, Options=Options).Create()
             Domoticz.Device(Name="Active Energy", Unit=8, Type=243, Subtype=29, Switchtype=0, Image=0, Options = { "Custom" : "1;Wh"}).Create()
             Domoticz.Device(Name="Reactive Energy", Unit=9, TypeName="Custom", Options = { "Custom" : "1;varh"}).Create()            
-            #Domoticz.Device(Name="ModbusDEV-READ", Unit=1, TypeName="Custom", Image=0, Used=1).Create() # Used=1 to add a switch immediatly!
-
         DumpConfigToLog()
         Domoticz.Log("Orno WE-504 Reader loaded.")
         return
@@ -223,55 +222,10 @@ class BasePlugin:
           Domoticz.Debug("Power factor: " + str(power_factor))
           Domoticz.Debug("Active Energy: " + str(active_energy))
           Domoticz.Debug("Reactive Energy: " + str(reactive_energy))
-
           Domoticz.Debug("Registers: " + str(data.registers) )
 
-          '''
-          Domoticz.Debug("*** MODBUS DEBUG VALUE int8"+ decoder.decode_8bit_int() )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE int16"+ decoder.decode_16bit_int() )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE int32"+ decoder.decode_32bit_int() )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE int64"+ decoder.decode_64bit_int() )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE uint8"+ decoder.decode_8bit_uint() )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE uint16"+ decoder.decode_16bit_uint() )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE uint32"+ decoder.decode_32bit_uint() )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE uint64"+ decoder.decode_64bit_uint() )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE float32"+ decoder.decode_32bit_float() )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE float64"+ decoder.decode_64bit_float() )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE string2"+ decoder.decode_string(2) )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE string4"+ decoder.decode_string(4) )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE string6"+ decoder.decode_string(6) )
-          Domoticz.Debug("*** MODBUS DEBUG VALUE string8"+ decoder.decode_string(8) )
-
-          #Domoticz.Debug("*** MODBUS DEBUG VALUE reg10: " + str(data.registers[10]))
-          #Domoticz.Debug("*** MODBUS DEBUG VALUE reg11: " + str(data.registers[11]))
-          #Domoticz.Debug("*** MODBUS DEBUG VALUE reg12: " + str(data.registers[12]))
-          '''
-
-          '''if (Parameters["Mode6"] == "noco"): value = data.registers[0]
-          if (Parameters["Mode6"] == "int8"): value = decoder.decode_8bit_int()
-          if (Parameters["Mode6"] == "int16"): value = decoder.decode_16bit_int()
-          if (Parameters["Mode6"] == "int32"): value = decoder.decode_32bit_int()
-          if (Parameters["Mode6"] == "int64"): value = decoder.decode_64bit_int()
-          if (Parameters["Mode6"] == "uint8"): value = decoder.decode_8bit_uint()
-          if (Parameters["Mode6"] == "uint16"): value = decoder.decode_16bit_uint()
-          if (Parameters["Mode6"] == "uint32"): value = decoder.decode_32bit_uint()
-          if (Parameters["Mode6"] == "uint64"): value = decoder.decode_64bit_uint()
-          if (Parameters["Mode6"] == "float32"): value = decoder.decode_32bit_float()
-          if (Parameters["Mode6"] == "float64"): value = decoder.decode_64bit_float()
-          if (Parameters["Mode6"] == "string2"): value = decoder.decode_string(2)
-          if (Parameters["Mode6"] == "string4"): value = decoder.decode_string(4)
-          if (Parameters["Mode6"] == "string6"): value = decoder.decode_string(6)
-          if (Parameters["Mode6"] == "string8"): value = decoder.decode_string(8)
-          Domoticz.Debug("MODBUS DEBUG VALUE: " + str(value))
-
-          # Divide the value (decimal)?
-          if (Parameters["Mode5"] == "div0"): value = str(value)
-          if (Parameters["Mode5"] == "div10"): value = str(round(value / 10, 3))
-          if (Parameters["Mode5"] == "div100"): value = str(round(value / 100, 3))
-          if (Parameters["Mode5"] == "div1000"): value = str(round(value / 1000, 3))
-		  '''
           Devices[1].Update(0, str(voltate) ) # Update value in Domoticz
-          Devices[2].Update(0, str(amperage) ) # Update value in Domoticz
+          Devices[2].Update(0, str(amperage), 0, 0 ) # Update L1, L2, L3 value in Domoticz
           Devices[3].Update(0, str(frequency) ) # Update value in Domoticz
           Devices[4].Update(0, str(active_power) ) # Update value in Domoticz
           Devices[5].Update(0, str(reactive_power) ) # Update value in Domoticz
