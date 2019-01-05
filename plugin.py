@@ -225,7 +225,7 @@ class BasePlugin:
           Domoticz.Debug("Registers: " + str(data.registers) )
 
           Devices[1].Update(0, str(voltate) ) # Update value in Domoticz
-          Devices[2].Update(0, str(amperage), 0, 0 ) # Update L1, L2, L3 value in Domoticz
+          Devices[2].Update(0, str(amperage)+";"+str(0)+";"+str(0)) # Update L1, L2, L3 value in Domoticz
           Devices[3].Update(0, str(frequency) ) # Update value in Domoticz
           Devices[4].Update(0, str(active_power) ) # Update value in Domoticz
           Devices[5].Update(0, str(reactive_power) ) # Update value in Domoticz
