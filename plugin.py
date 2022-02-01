@@ -77,14 +77,12 @@
     </params>
 </plugin>
 """
-import Domoticz
 
+import Domoticz
 import sys
-##sys.path.append('/usr/local/lib/python3.4/dist-packages')
-sys.path.append('/usr/local/lib/python3.5/dist-packages')
+import pymodbus
 
 from pymodbus.client.sync import ModbusSerialClient
-
 from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
 
@@ -99,19 +97,20 @@ class BasePlugin:
         return
 
     def onStart(self):
-        #Domoticz.Log("onStart called")
+        Domoticz.Log("onStart called")
+
         if Parameters["Mode4"] == "debug": Domoticz.Debugging(1)
         if (len(Devices) == 0): 
             Options = { "Custom" : "1;VA"} 
-            Domoticz.Device(Name="Voltage", Unit=1, TypeName="Voltage", Image=0, Options="").Create()
-            Domoticz.Device(Name="Amperage", Unit=2, TypeName="Current/Ampere", Image=0, Options = { "Custom" : "1;A"}).Create()
-            Domoticz.Device(Name="Frequency", Unit=3, TypeName="Custom", Options = { "Custom" : "1;Hz"}).Create()
+            Domoticz.Device(Name="Voltage", Unit=1, Type=243, Subtype=8, TypeName="Voltage", Image=0, Options="").Create()
+            Domoticz.Device(Name="Amperage", Unit=2, Type=243, Subtype=23, TypeName="Current/Ampere", Image=0, Options = { "Custom" : "1;A"}).Create()
+            Domoticz.Device(Name="Frequency", Unit=3, TypeName="Custom", Image=0,Options = { "Custom" : "1;Hz"}).Create()
             Domoticz.Device(Name="Active power", Unit=4, TypeName="Usage", Image=0, Options = { "Custom" : "1;W"}).Create()            
-            Domoticz.Device(Name="Reactive power", Unit=5, TypeName="Custom", Options = Options).Create()
-            Domoticz.Device(Name="Apparent power", Unit=6, TypeName="Custom", Options = Options).Create()
-            Domoticz.Device(Name="Power factor", Unit=7, Type=243, Subtype=29, Switchtype=0, Image=0, Options=Options).Create()
-            Domoticz.Device(Name="Active Energy", Unit=8, Type=243, Subtype=29, Switchtype=0, Image=0, Options = { "Custom" : "1;Wh"}).Create()
-            Domoticz.Device(Name="Reactive Energy", Unit=9, TypeName="Custom", Options = { "Custom" : "1;varh"}).Create()            
+            Domoticz.Device(Name="Reactive power", Unit=5, TypeName="Custom", Image=0, Options = Options).Create()
+            Domoticz.Device(Name="Apparent power", Unit=6, TypeName="Custom", Image=0, Options = Options).Create()
+            Domoticz.Device(Name="Power factor", Unit=7, TypeName="Custom", Image=0, Options = Options).Create()
+            Domoticz.Device(Name="Active Energy", Unit=8, TypeName="Custom", Image=0, Options = { "Custom" : "1;Wh"}).Create()
+            Domoticz.Device(Name="Reactive Energy", Unit=9, TypeName="Custom", Image=0, Options = { "Custom" : "1;varh"}).Create()
         DumpConfigToLog()
         Domoticz.Log("Orno WE-504 Reader loaded.")
         return
@@ -203,7 +202,7 @@ class BasePlugin:
           decoder = BinaryPayloadDecoder.fromRegisters(data.registers, byteorder=Endian.Big, wordorder=Endian.Big)
 
           #Registers: [2411, 3, 500, 87, 0, 88, 1000, 1, 26001, 0, 6006, 0, 0, 0, 4, 1]
-          voltate = round(data.registers[0] / 10, 3)
+          voltage = round(data.registers[0] / 10, 3)
           amperage = round(data.registers[1] / 10, 3)
           frequency = round(data.registers[2] / 10, 3)
           active_power = data.registers[3]
@@ -213,7 +212,7 @@ class BasePlugin:
           active_energy = data.registers[7]
           reactive_energy = data.registers[10]
 
-          Domoticz.Debug("Voltate: " + str(voltate))
+          Domoticz.Debug("Voltage: " + str(voltage))
           Domoticz.Debug("Amperage: " + str(amperage))
           Domoticz.Debug("Frequency: " + str(frequency))
           Domoticz.Debug("Active power: " + str(active_power))
@@ -224,7 +223,7 @@ class BasePlugin:
           Domoticz.Debug("Reactive Energy: " + str(reactive_energy))
           Domoticz.Debug("Registers: " + str(data.registers) )
 
-          Devices[1].Update(0, str(voltate) ) # Update value in Domoticz
+          Devices[1].Update(0, str(voltage) ) # Update value in Domoticz
           Devices[2].Update(0, str(amperage)+";"+str(0)+";"+str(0)) # Update L1, L2, L3 value in Domoticz
           Devices[3].Update(0, str(frequency) ) # Update value in Domoticz
           Devices[4].Update(0, str(active_power) ) # Update value in Domoticz
