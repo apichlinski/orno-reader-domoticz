@@ -210,7 +210,7 @@ class BasePlugin:
           reactive_power = data.registers[4]
           apparent_power = data.registers[5]
           power_factor = data.registers[6]
-          active_energy = data.registers[7]
+          active_energy = ((data.registers[7]*65535) + data.registers[8])/1000
           reactive_energy = data.registers[10]
 
           Domoticz.Debug("Voltate: " + str(voltate))
